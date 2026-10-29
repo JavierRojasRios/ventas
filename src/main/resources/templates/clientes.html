@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="contenedor" style="margin: 0 auto; width: 95%;">
+        <h1>Clientes</h1>
+        <form action="/clientes/crear">
+            <input type="submit" value="Crear">
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Apellido1</th>
+                    <th>Apellido2</th>
+                    <th>Ciudad</th>
+                    <th>Categoría</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cliente : ${listaClientes}">
+                    <td th:text="${cliente.id}">0</td>
+                    <td th:text="${cliente.nombre}">nombre</td>
+                    <td th:text="${cliente.apellido1}">apellido1</td>
+                    <td th:text="${cliente.apellido2}">apellido2</td>
+                    <td th:text="${cliente.ciudad}">ciudad</td>
+                    <td th:text="${cliente.categoria}">categoría</td>
+                    <td>
+                        <form th:action="@{/clientes/{id}(id=${cliente.id})}" style="display: inline;">
+                            <input type="submit" value="Ver Detalle">
+                        </form>
+                        <form th:action="@{/clientes/editar/{id}(id=${cliente.id})}" style="display: inline;">
+                            <input type="submit" value="Editar">
+                        </form>
+                        <form th:action="@{/clientes/borrar/{id}(id=${cliente.id})}" method="post" style="display: inline;">
+                            <input type="submit" value="Eliminar">
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+
+
+</html>
