@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Detalle de pedido | Ventas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="border-bottom bg-body-tertiary">
+        <nav class="container navbar navbar-expand py-2">
+            <a class="navbar-brand fw-semibold" th:href="@{/pedidos}">Ventas</a>
+            <div class="navbar-nav flex-row gap-3">
+                <a class="nav-link" th:href="@{/clientes}">Clientes</a>
+                <a class="nav-link" th:href="@{/comerciales}">Comerciales</a>
+                <a class="nav-link active" th:href="@{/pedidos}">Pedidos</a>
+            </div>
+        </nav>
+    </header>
+    <main class="container py-4">
+        <div class="col-12 col-lg-8">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                <h1 class="h2 mb-0">Detalle del pedido</h1>
+                <a class="btn btn-outline-primary" th:href="@{/pedidos/editar/{id}(id=${pedidoDetalle.pedido.id})}">Editar</a>
+            </div>
+            <dl class="row">
+                <dt class="col-sm-4">Id</dt><dd class="col-sm-8" th:text="${pedidoDetalle.pedido.id}">0</dd>
+                <dt class="col-sm-4">Total</dt><dd class="col-sm-8" th:text="${#numbers.formatDecimal(pedidoDetalle.pedido.total, 1, 2)}">0.00</dd>
+                <dt class="col-sm-4">Fecha</dt><dd class="col-sm-8" th:text="${pedidoDetalle.pedido.fecha} ?: '—'">Fecha</dd>
+                <dt class="col-sm-4">Cliente</dt><dd class="col-sm-8" th:text="${pedidoDetalle.clienteNombreCompleto}">Cliente</dd>
+                <dt class="col-sm-4">Comercial</dt><dd class="col-sm-8" th:text="${pedidoDetalle.comercialNombreCompleto}">Comercial</dd>
+            </dl>
+            <a class="btn btn-secondary" th:href="@{/pedidos}">Volver al listado</a>
+        </div>
+    </main>
+</body>
+</html>

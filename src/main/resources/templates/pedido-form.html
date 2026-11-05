@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${nuevo} ? 'Nuevo pedido | Ventas' : 'Editar pedido | Ventas'">Pedido | Ventas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="border-bottom bg-body-tertiary">
+        <nav class="container navbar navbar-expand py-2">
+            <a class="navbar-brand fw-semibold" th:href="@{/pedidos}">Ventas</a>
+            <div class="navbar-nav flex-row gap-3">
+                <a class="nav-link" th:href="@{/clientes}">Clientes</a>
+                <a class="nav-link" th:href="@{/comerciales}">Comerciales</a>
+                <a class="nav-link active" th:href="@{/pedidos}">Pedidos</a>
+            </div>
+        </nav>
+    </header>
+    <main class="container py-4">
+        <div class="col-12 col-lg-8 col-xl-7">
+            <h1 class="h2 mb-4" th:text="${nuevo} ? 'Nuevo pedido' : 'Editar pedido'">Pedido</h1>
+            <div th:if="${mensajeError}" class="alert alert-danger" role="alert" th:text="${mensajeError}"></div>
+            <form th:object="${pedido}" th:action="${nuevo} ? @{/pedidos/crear} : @{/pedidos/editar/{id}(id=${pedido.id})}" method="post">
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="total">Total</label>
+                        <input class="form-control" id="total" type="number" min="0" step="0.01" th:field="*{total}" required>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="fecha">Fecha</label>
+                        <input class="form-control" id="fecha" type="date" th:field="*{fecha}">
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="clienteId">Cliente</label>
+                        <select class="form-select" id="clienteId" th:field="*{clienteId}" required>
+                            <option value="">Selecciona un cliente</option>
+                            <option th:each="cliente : ${listaClientes}" th:value="${cliente.id}"
+                                th:text="${cliente.nombre + ' ' + cliente.apellido1 + (cliente.apellido2 != null ? ' ' + cliente.apellido2 : '')}">Cliente</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="comercialId">Comercial</label>
+                        <select class="form-select" id="comercialId" th:field="*{comercialId}" required>
+                            <option value="">Selecciona un comercial</option>
+                            <option th:each="comercial : ${listaComerciales}" th:value="${comercial.id}"
+                                th:text="${comercial.nombre + ' ' + comercial.apellido1 + (comercial.apellido2 != null ? ' ' + comercial.apellido2 : '')}">Comercial</option>
+                        </select>
+                    </div>
+                    <div class="col-12 d-flex gap-2 pt-2">
+                        <button class="btn btn-primary" type="submit" th:text="${nuevo} ? 'Crear pedido' : 'Guardar cambios'">Guardar</button>
+                        <a class="btn btn-outline-secondary" th:href="@{/pedidos}">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

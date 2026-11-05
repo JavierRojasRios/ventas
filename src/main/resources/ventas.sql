@@ -21,7 +21,7 @@ CREATE TABLE comercial (
 
 CREATE TABLE pedido (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  total DOUBLE NOT NULL,
+  total DECIMAL(10, 2) NOT NULL,
   fecha DATE,
   id_cliente INT UNSIGNED NOT NULL,
   id_comercial INT UNSIGNED NOT NULL,

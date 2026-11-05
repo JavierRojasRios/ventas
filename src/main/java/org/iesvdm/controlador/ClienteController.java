@@ -11,37 +11,39 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
+@RequestMapping("/clientes")
 @Controller
 public class ClienteController {
     
     @Autowired 
     private ClienteService clienteService;
 
-    @GetMapping("/clientes")
+    @GetMapping
     public String listar(Model model){
         List<Cliente> clientes = clienteService.listAll();
         model.addAttribute("listaClientes", clientes);
         return "clientes";
     }
 
-    @GetMapping("/clientes/crear")
+    @GetMapping("/crear")
     public String crearForm(Model model) {
         model.addAttribute("cliente", new Cliente());
         model.addAttribute("nuevo", true);
         return "cliente-form";
     }
 
-    @PostMapping("/clientes/crear")
+    @PostMapping("/crear")
     public String crear(@ModelAttribute Cliente cliente, RedirectAttributes redirectAttributes) {
         clienteService.create(cliente);
         redirectAttributes.addFlashAttribute("mensaje", "Cliente creado correctamente.");
         return "redirect:/clientes";
     }
 
-    @GetMapping("/clientes/{id}")
+    @GetMapping("/{id}")
     public String detalle(@PathVariable int id, Model model, RedirectAttributes redirectAttributes) {
         return clienteService.find(id)
                 .map(cliente -> {
@@ -54,7 +56,7 @@ public class ClienteController {
                 });
     }
 
-    @GetMapping("/clientes/editar/{id}")
+    @GetMapping("/editar/{id}")
     public String editarForm(@PathVariable int id, Model model, RedirectAttributes redirectAttributes) {
         return clienteService.find(id)
                 .map(cliente -> {
@@ -68,7 +70,7 @@ public class ClienteController {
                 });
     }
 
-    @PostMapping("/clientes/editar/{id}")
+    @PostMapping("/editar/{id}")
     public String editar(@PathVariable int id, @ModelAttribute Cliente cliente,
             RedirectAttributes redirectAttributes) {
         cliente.setId(id);
@@ -77,7 +79,7 @@ public class ClienteController {
         return "redirect:/clientes";
     }
 
-    @PostMapping("/clientes/borrar/{id}")
+    @PostMapping("/borrar/{id}")
     public String borrar(@PathVariable int id, RedirectAttributes redirectAttributes) {
         try {
             clienteService.delete(id);
