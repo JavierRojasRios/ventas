@@ -2,6 +2,7 @@ package org.iesvdm.controlador;
 
 import org.iesvdm.servicios.ClienteService;
 import java.util.List;
+import java.util.Map;
 import org.iesvdm.modelo.Cliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -23,9 +25,24 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @GetMapping
-    public String listar(Model model){
-        List<Cliente> clientes = clienteService.listAll();
+    public String listar(@RequestParam Map<String, String> parametros, Model model){
+        String ciudad = parametros.get("ciudad");
+        if (ciudad == null) {
+            ciudad = parametros.entrySet().stream()
+                    .filter(parametro -> parametro.getValue() == null || parametro.getValue().isBlank())
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        if (ciudad != null) {
+            ciudad = ciudad.trim();
+        }
+        List<Cliente> clientes = ciudad == null || ciudad.isBlank()
+                ? clienteService.listAll()
+                : clienteService.findByCity(ciudad);
         model.addAttribute("listaClientes", clientes);
+        model.addAttribute("ciudadFiltro", ciudad);
         return "clientes";
     }
 

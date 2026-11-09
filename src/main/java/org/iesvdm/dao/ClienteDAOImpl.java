@@ -87,6 +87,19 @@ public class ClienteDAOImpl implements ClienteDAO {
         
 	}
 
+	@Override
+	public List<Cliente> findByCity(String ciudad) {
+		return jdbcTemplate.query(
+				"SELECT * FROM cliente WHERE ciudad = ?",
+				(rs, rowNum) -> new Cliente(rs.getInt("id"),
+						rs.getString("nombre"),
+						rs.getString("apellido1"),
+						rs.getString("apellido2"),
+						rs.getString("ciudad"),
+						rs.getObject("categoría", Integer.class)),
+				ciudad);
+	}
+
 	/**
 	 * Devuelve Optional de Cliente con el ID dado.
 	 */
