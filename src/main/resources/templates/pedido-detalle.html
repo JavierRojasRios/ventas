@@ -32,6 +32,26 @@
             </dl>
             <a class="btn btn-secondary" th:href="@{/pedidos}">Volver al listado</a>
         </div>
+        <hr />
+        <h2 class="h4">Clientes asociados</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Primer apellido</th>
+                    <th>Segundo apellido</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cliente : ${clientes}">
+                    <td th:text="${cliente.id}">0</td>
+                    <td th:text="${cliente.nombre}">Nombre</td>
+                    <td th:text="${cliente.apellido1}">Apellido</td>
+                    <td th:text="${cliente.apellido2} ?: '—'">Apellido</td>
+                </tr>
+            </tbody>
+        </table>
     </main>
 </body>
 </html>

@@ -4,6 +4,7 @@ import org.iesvdm.servicios.ClienteService;
 import java.util.List;
 import java.util.Map;
 import org.iesvdm.modelo.Cliente;
+import org.iesvdm.modelo.PedidoDetalle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -64,7 +65,9 @@ public class ClienteController {
     public String detalle(@PathVariable int id, Model model, RedirectAttributes redirectAttributes) {
         return clienteService.find(id)
                 .map(cliente -> {
+                    List<PedidoDetalle> pedidos = clienteService.listPedidosByClienteId(id);
                     model.addAttribute("cliente", cliente);
+                    model.addAttribute("pedidos", pedidos);
                     return "cliente-detalle";
                 })
                 .orElseGet(() -> {

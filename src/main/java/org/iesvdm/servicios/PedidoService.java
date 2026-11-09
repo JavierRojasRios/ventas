@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.iesvdm.dao.PedidoDAO;
+import org.iesvdm.modelo.Cliente;
+import org.iesvdm.dao.ClienteDAO;
 import org.iesvdm.modelo.Pedido;
 import org.iesvdm.modelo.PedidoDetalle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,9 @@ public class PedidoService {
 
     @Autowired
     private PedidoDAO pedidoDAO;
+
+    @Autowired
+    private ClienteDAO ClienteDAO;
 
     public List<Pedido> listAll() {
         return pedidoDAO.getAll();
@@ -29,6 +34,10 @@ public class PedidoService {
 
     public Optional<PedidoDetalle> findDetalle(int id) {
         return pedidoDAO.findDetalle(id);
+    }
+    
+    public List<Cliente> findByPedidoId(int pedidoId) {
+        return ClienteDAO.findByPedidoId(pedidoId);
     }
 
     public void create(Pedido pedido) {

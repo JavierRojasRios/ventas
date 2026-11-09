@@ -153,5 +153,18 @@ public class ClienteDAOImpl implements ClienteDAO {
 		log.info("Delete de Cliente con {} registros eliminados.", rows);		
 		
 	}
+
+	@Override
+	public List<Cliente> findByPedidoId(int pedidoId) {
+		return jdbcTemplate.query(
+				"SELECT c.* FROM cliente c JOIN pedido p ON c.id = p.id_cliente WHERE p.id = ?",
+				(rs, rowNum) -> new Cliente(rs.getInt("id"),
+						rs.getString("nombre"),
+						rs.getString("apellido1"),
+						rs.getString("apellido2"),
+						rs.getString("ciudad"),
+						rs.getObject("categoría", Integer.class)),
+				pedidoId);
+	}
 	
 }

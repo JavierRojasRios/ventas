@@ -33,6 +33,30 @@
                 <a class="btn btn-secondary" th:href="@{/comerciales}">Volver al listado</a>
             </div>
         </div>
+        <hr />
+        <h2 class="h4">Pedidos asociados</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Importe</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="pedido : ${pedidos}">
+                    <td th:text="${pedido.pedido.id}">0</td>
+                    <td>
+                        <a class="text-decoration-none"
+                           th:href="@{/clientes/{id}(id=${pedido.pedido.clienteId})}"
+                           th:text="${pedido.clienteNombreCompleto}">Cliente</a>
+                    </td>
+                    <td th:text="${pedido.pedido.fecha}">Fecha</td>
+                    <td th:text="${pedido.pedido.total}">Importe</td>
+                </tr>
+            </tbody>
+        </table>
     </main>
 </body>
 </html>

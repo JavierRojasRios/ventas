@@ -177,6 +177,42 @@ class PedidoWorkflowTests {
         assertFalse(pedidoService.find(pedido.getId()).isEmpty());
     }
 
+        @Test
+        void commercialDetailDisplaysAssociatedPedidos() throws Exception {
+                String suffix = UUID.randomUUID().toString().substring(0, 8);
+                Cliente cliente = crearCliente("ClienteDetalle" + suffix);
+                Comercial comercial = crearComercial("ComercialDetalle" + suffix);
+                Pedido pedido = new Pedido(0, new BigDecimal("45.50"), LocalDate.of(2025, 5, 20),
+                                cliente.getId(), comercial.getId());
+                pedidoService.create(pedido);
+
+                mockMvc.perform(get("/comerciales/{id}", comercial.getId()))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("comercial-detalle"))
+                                .andExpect(content().string(containsString(">" + pedido.getId() + "</td>")))
+                                .andExpect(content().string(containsString("/clientes/" + cliente.getId())))
+                                .andExpect(content().string(containsString(nombreCliente(cliente))))
+                                .andExpect(content().string(containsString(">2025-05-20</td>")))
+                                .andExpect(content().string(containsString(">45.50</td>")));
+        }
+
+        @Test
+        void clientDetailDisplaysAssociatedPedidos() throws Exception {
+                String suffix = UUID.randomUUID().toString().substring(0, 8);
+                Cliente cliente = crearCliente("ClientePedidos" + suffix);
+                Comercial comercial = crearComercial("ComercialPedidos" + suffix);
+                Pedido pedido = new Pedido(0, new BigDecimal("68.25"), LocalDate.of(2025, 6, 10),
+                                cliente.getId(), comercial.getId());
+                pedidoService.create(pedido);
+
+                mockMvc.perform(get("/clientes/{id}", cliente.getId()))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("cliente-detalle"))
+                                .andExpect(content().string(containsString("/pedidos/" + pedido.getId())))
+                                .andExpect(content().string(containsString(">2025-06-10</td>")))
+                                .andExpect(content().string(containsString(">68.25</td>")));
+        }
+
     private Cliente crearCliente(String nombre) {
         Cliente cliente = new Cliente(0, nombre, "Prueba", null, "Test", null);
         clienteService.create(cliente);

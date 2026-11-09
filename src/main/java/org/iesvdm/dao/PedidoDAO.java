@@ -15,4 +15,6 @@ public interface PedidoDAO {
     Optional<PedidoDetalle> findDetalle(int id);
     void update(Pedido pedido);
     void delete(int id);
+    List<PedidoDetalle> findByClienteId(int clienteId);
+    List<PedidoDetalle> findByComercialId(int comercialId);
 }

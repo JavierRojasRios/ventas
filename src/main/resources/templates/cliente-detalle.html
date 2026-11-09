@@ -34,6 +34,32 @@
                 <a class="btn btn-secondary" th:href="@{/clientes}">Volver al listado</a>
             </div>
         </div>
+        <hr />
+        <h2 class="h4">Pedidos del cliente</h2>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="pedidoDetalle : ${pedidos}">
+                        <td>
+                                     <a class="text-decoration-none" th:href="@{/pedidos/{id}(id=${pedidoDetalle.pedido.id})}"
+                               th:text="${pedidoDetalle.pedido.id}">0</a>
+                        </td>
+                        <td th:text="${pedidoDetalle.pedido.fecha} ?: '—'">Fecha</td>
+                        <td th:text="${pedidoDetalle.pedido.total}">Total</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(pedidos)}">
+                        <td colspan="3" class="text-center text-body-secondary py-4">Este cliente no tiene pedidos.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </main>
 </body>
 </html>

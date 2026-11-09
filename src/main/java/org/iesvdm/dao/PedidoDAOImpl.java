@@ -167,4 +167,27 @@ public class PedidoDAOImpl implements PedidoDAO {
                 rs.getString("cliente_nombre_completo"),
                 rs.getString("comercial_nombre_completo"));
     }
+
+    @Override
+    public List<PedidoDetalle> findByClienteId(int clienteId) {
+        List<PedidoDetalle> pedidos = jdbcTemplate.query(
+                SQL_PEDIDOS_DETALLE + " WHERE p.id_cliente = ?",
+                (rs, rowNum) -> mapPedidoDetalle(rs),
+                clienteId);
+
+        log.info("Devueltos {} detalles de pedido para el cliente con ID {}.", pedidos.size(), clienteId);
+        return pedidos;
+    }
+
+    @Override
+    public List<PedidoDetalle> findByComercialId(int comercialId) {
+        List<PedidoDetalle> pedidos = jdbcTemplate.query(
+                SQL_PEDIDOS_DETALLE + " WHERE p.id_comercial = ?",
+                (rs, rowNum) -> mapPedidoDetalle(rs),
+                comercialId);
+
+        log.info("Devueltos {} detalles de pedido para el comercial con ID {}.", pedidos.size(), comercialId);
+        return pedidos;
+    }
+    
 }

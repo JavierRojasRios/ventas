@@ -1,5 +1,8 @@
 package org.iesvdm.controlador;
 
+import java.util.List;
+
+import org.iesvdm.modelo.Cliente;
 import org.iesvdm.modelo.Pedido;
 import org.iesvdm.servicios.ClienteService;
 import org.iesvdm.servicios.ComercialService;
@@ -57,7 +60,9 @@ public class PedidoController {
     public String detalle(@PathVariable int id, Model model, RedirectAttributes redirectAttributes) {
         return pedidoService.findDetalle(id)
                 .map(pedidoDetalle -> {
+                    List<Cliente> clientes = pedidoService.findByPedidoId(id);
                     model.addAttribute("pedidoDetalle", pedidoDetalle);
+                    model.addAttribute("clientes", clientes);
                     return "pedido-detalle";
                 })
                 .orElseGet(() -> {
