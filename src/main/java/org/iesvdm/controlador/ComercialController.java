@@ -2,6 +2,8 @@ package org.iesvdm.controlador;
 
 import java.util.List;
 
+import org.iesvdm.dto.ClientePedidosDTO;
+import org.iesvdm.dto.EstadisticasPedidosDTO;
 import org.iesvdm.modelo.Comercial;
 import org.iesvdm.modelo.PedidoDetalle;
 import org.iesvdm.servicios.ComercialService;
@@ -49,8 +51,12 @@ public class ComercialController {
         return comercialService.find(id)
                 .map(comercial -> {
                     List<PedidoDetalle> pedidos = comercialService.listPedidosByComercialId(id);
+                    List<ClientePedidosDTO> clientesPorTotal =
+                            comercialService.listClientesByComercialIdOrderByTotal(id);
                     model.addAttribute("comercial", comercial);
                     model.addAttribute("pedidos", pedidos);
+                    model.addAttribute("estadisticasPedidos", EstadisticasPedidosDTO.fromPedidos(pedidos));
+                    model.addAttribute("clientesPorTotal", clientesPorTotal);
                     return "comercial-detalle";
                 })
                 .orElseGet(() -> {

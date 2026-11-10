@@ -197,6 +197,43 @@ class PedidoWorkflowTests {
         }
 
         @Test
+        void commercialDetailDisplaysStatisticsAndCustomersRankedByAllTheirOrders() throws Exception {
+                String suffix = UUID.randomUUID().toString().substring(0, 8);
+                Cliente clienteConMayorTotal = crearCliente("ClienteMayorTotal" + suffix);
+                Cliente clienteConMenorTotal = crearCliente("ClienteMenorTotal" + suffix);
+                Comercial comercial = crearComercial("ComercialEstadisticas" + suffix);
+                Comercial otroComercial = crearComercial("OtroComercial" + suffix);
+
+                pedidoService.create(new Pedido(0, new BigDecimal("10.00"), LocalDate.of(2025, 1, 1),
+                                clienteConMayorTotal.getId(), comercial.getId()));
+                pedidoService.create(new Pedido(0, new BigDecimal("30.00"), LocalDate.of(2025, 1, 2),
+                                clienteConMenorTotal.getId(), comercial.getId()));
+                pedidoService.create(new Pedido(0, new BigDecimal("90.00"), LocalDate.of(2025, 1, 3),
+                                clienteConMayorTotal.getId(), otroComercial.getId()));
+
+                String html = mockMvc.perform(get("/comerciales/{id}", comercial.getId()))
+                                .andExpect(status().isOk())
+                                .andExpect(view().name("comercial-detalle"))
+                                .andReturn()
+                                .getResponse()
+                                .getContentAsString();
+
+                assertTrue(html.contains(">40.00</dd>"));
+                assertTrue(html.contains(">20.00</dd>"));
+                assertTrue(html.contains("pedido-maximo"));
+                assertTrue(html.contains("pedido-minimo"));
+
+                int inicioRanking = html.indexOf("Clientes por importe total de sus pedidos");
+                int posicionClienteMayor = html.indexOf("/clientes/" + clienteConMayorTotal.getId(), inicioRanking);
+                int posicionClienteMenor = html.indexOf("/clientes/" + clienteConMenorTotal.getId(), inicioRanking);
+                assertTrue(inicioRanking >= 0);
+                assertTrue(posicionClienteMayor >= 0);
+                assertTrue(posicionClienteMenor > posicionClienteMayor);
+                assertTrue(html.indexOf(">100.00</td>", inicioRanking)
+                                < html.indexOf(">30.00</td>", inicioRanking));
+        }
+
+        @Test
         void clientDetailDisplaysAssociatedPedidos() throws Exception {
                 String suffix = UUID.randomUUID().toString().substring(0, 8);
                 Cliente cliente = crearCliente("ClientePedidos" + suffix);
