@@ -2,6 +2,8 @@ package org.iesvdm.servicios;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDate;
+import org.iesvdm.dto.ClienteComercialDTO;
 import org.iesvdm.modelo.Cliente;
 import org.iesvdm.dao.ClienteDAO;
 import org.iesvdm.dao.PedidoDAO;
@@ -32,6 +34,18 @@ public class ClienteService {
 
     public List<PedidoDetalle> listPedidosByClienteId(int clienteId) {
         return pedidoDAO.findByClienteId(clienteId);
+    }
+
+    public List<ClienteComercialDTO> listComercialesByClienteId(int clienteId) {
+        return clienteDAO.findComercialesByClienteId(clienteId);
+    }
+
+    public void addComercial(int clienteId, int comercialId, LocalDate fecha, int prioridad) {
+        clienteDAO.addComercial(clienteId, comercialId, fecha, prioridad);
+    }
+
+    public void removeComercial(int clienteId, int comercialId) {
+        clienteDAO.removeComercial(clienteId, comercialId);
     }
 
     public void create(Cliente cliente) {

@@ -48,6 +48,72 @@
                         </div>
                     </div>
                 </form>
+
+                <section class="mt-5" th:if="${!nuevo}">
+                    <h2 class="h4 mb-3">Comerciales del cliente</h2>
+                    <form class="border-top pt-3" th:action="@{/clientes/editar/{id}/comerciales(id=${cliente.id})}" method="post">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-12 col-md-5">
+                                <label class="form-label" for="comercialId">Comercial</label>
+                                <select class="form-select" id="comercialId" name="comercialId" required
+                                        th:disabled="${#lists.isEmpty(comercialesDisponibles)}">
+                                    <option value="" selected disabled>Selecciona un comercial</option>
+                                    <option th:each="comercial : ${comercialesDisponibles}"
+                                            th:value="${comercial.id}"
+                                            th:text="${comercial.nombre + ' ' + comercial.apellido1 + (comercial.apellido2 != null ? ' ' + comercial.apellido2 : '')}">
+                                        Nombre Apellido
+                                    </option>
+                                </select>
+                                <div class="form-text" th:if="${#lists.isEmpty(comercialesDisponibles)}">
+                                    Todos los comerciales ya están vinculados.
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label class="form-label" for="fecha">Fecha</label>
+                                <input class="form-control" id="fecha" name="fecha" type="date" required>
+                            </div>
+                            <div class="col-12 col-md-2">
+                                <label class="form-label" for="prioridad">Prioridad</label>
+                                <input class="form-control" id="prioridad" name="prioridad" type="number" min="1" required>
+                            </div>
+                            <div class="col-12 col-md-2">
+                                <button class="btn btn-primary w-100" type="submit"
+                                        th:disabled="${#lists.isEmpty(comercialesDisponibles)}">Añadir Comercial</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="table-responsive mt-4">
+                        <table class="table table-sm align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Comercial</th>
+                                    <th>Fecha</th>
+                                    <th>Prioridad</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="vinculo : ${comercialesVinculados}">
+                                    <td><a class="text-decoration-none"
+                                           th:href="@{/comerciales/{id}(id=${vinculo.comercialId})}"
+                                           th:text="${vinculo.comercialNombre}">Comercial</a></td>
+                                    <td th:text="${vinculo.fecha} ?: '—'">Fecha</td>
+                                    <td th:text="${vinculo.prioridad} ?: '—'">Prioridad</td>
+                                    <td class="text-end">
+                                        <form th:action="@{/clientes/editar/{id}/comerciales/{comercialId}/borrar(id=${cliente.id}, comercialId=${vinculo.comercialId})}"
+                                              method="post">
+                                            <button class="btn btn-sm btn-outline-danger" type="submit">Borrar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(comercialesVinculados)}">
+                                    <td colspan="4" class="text-body-secondary">No hay comerciales vinculados.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
             </div>
         </div>
     </main>

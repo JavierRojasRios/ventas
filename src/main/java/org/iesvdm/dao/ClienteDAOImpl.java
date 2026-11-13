@@ -1,9 +1,12 @@
 package org.iesvdm.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.iesvdm.dto.ClienteComercialDTO;
 import org.iesvdm.modelo.Cliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -165,6 +168,43 @@ public class ClienteDAOImpl implements ClienteDAO {
 						rs.getString("ciudad"),
 						rs.getObject("categoría", Integer.class)),
 				pedidoId);
+	}
+
+	@Override
+	public List<ClienteComercialDTO> findComercialesByClienteId(int clienteId) {
+		return jdbcTemplate.query("""
+				SELECT c.id AS comercial_id,
+				       CONCAT_WS(' ', c.nombre, c.apellido1, c.apellido2) AS comercial_nombre,
+				       chc.fecha,
+				       chc.prioridad
+				FROM cliente_has_comercial chc
+				JOIN comercial c ON c.id = chc.comercial_id
+				WHERE chc.cliente_id = ?
+				ORDER BY chc.prioridad, c.apellido1, c.nombre
+				""",
+				(rs, rowNum) -> {
+					Date fecha = rs.getDate("fecha");
+					return new ClienteComercialDTO(rs.getInt("comercial_id"),
+							rs.getString("comercial_nombre"),
+							fecha == null ? null : fecha.toLocalDate(),
+							rs.getObject("prioridad", Integer.class));
+				}, clienteId);
+	}
+
+	@Override
+	public void addComercial(int clienteId, int comercialId, LocalDate fecha, int prioridad) {
+		jdbcTemplate.update("""
+				INSERT INTO cliente_has_comercial (cliente_id, comercial_id, fecha, prioridad)
+				VALUES (?, ?, ?, ?)
+				""", clienteId, comercialId, Date.valueOf(fecha), prioridad);
+	}
+
+	@Override
+	public void removeComercial(int clienteId, int comercialId) {
+		jdbcTemplate.update("""
+				DELETE FROM cliente_has_comercial
+				WHERE cliente_id = ? AND comercial_id = ?
+				""", clienteId, comercialId);
 	}
 	
 }
